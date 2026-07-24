@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scriptkit"
+description = "Stdlib-first toolkit for single-file Python scripts: dataclass config with CLI+env wiring, semantic logging with a rich fallback, and small utilities."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Aidan Calderhead" }]
+license = { text = "MIT" }
+dynamic = ["version"]
+dependencies = []
+
+[project.optional-dependencies]
+# Decorated console logging. Without this extra, scriptkit uses its stdlib
+# fallback (still exposes the semantic vocabulary via [TAG] prefixes).
+rich = ["rich_logger @ git+https://github.com/acalderhead/rich-logger.git@v1.0.1"]
+# Azure helpers in scriptkit.azure.
+azure = ["azure-identity>=1.16"]
+# Local development / CI.
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/acalderhead/py-scriptkit"
+Repository = "https://github.com/acalderhead/py-scriptkit"
+
+[tool.hatch.metadata]
+# Required because the optional extras pin git URLs (direct references).
+allow-direct-references = true
+
+[tool.hatch.version]
+# Single source of truth: the package's __version__.
+path = "src/scriptkit/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scriptkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# Skip the scripts/ archive: those are pinned, historical, self-contained.
+exclude = ["scripts/**", "templates/**"]
