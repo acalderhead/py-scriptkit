@@ -121,11 +121,18 @@ def _configure_stdlib() -> None:
 
 
 def _name_from(name_or_path: Any) -> str:
-    """Derive a logger name; a path-like value is reduced to its file stem."""
+    """
+    Derive a logger name; a path-like value is reduced to its file stem.
+
+    Normalize Windows separators to '/' first so the stem is derived correctly
+    on any OS: a script's __file__ uses native separators, but a value carrying
+    '\\' must not be treated as one long filename on POSIX (where '\\' is a
+    legal filename character, not a separator).
+    """
     if name_or_path is None:
         return "script"
-    text = str(name_or_path)
-    if text.endswith(".py") or "/" in text or "\\" in text:
+    text = str(name_or_path).replace("\\", "/")
+    if text.endswith(".py") or "/" in text:
         return Path(text).stem
     return text
 
