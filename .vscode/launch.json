@@ -2,7 +2,9 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug current file",
+      // Debugs the open file using whichever interpreter is currently selected
+      // (Python: Select Interpreter). Defaults to .venv313 — see settings.json.
+      "name": "Debug current file (selected interpreter)",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
@@ -10,11 +12,35 @@
       "cwd": "${workspaceFolder}"
     },
     {
-      "name": "Debug tests",
+      // Debug the test suite on Python 3.13.
+      "name": "Debug tests (3.13)",
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "args": ["-q"],
+      "python": "${workspaceFolder}/.venv313/Scripts/python.exe",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      // Debug the test suite on Python 3.12.
+      "name": "Debug tests (3.12)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q"],
+      "python": "${workspaceFolder}/.venv312/Scripts/python.exe",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      // Debug the test suite on Python 3.11 (the package's requires-python floor).
+      "name": "Debug tests (3.11)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q"],
+      "python": "${workspaceFolder}/.venv311/Scripts/python.exe",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     }

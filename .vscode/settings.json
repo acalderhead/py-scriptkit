@@ -1,6 +1,11 @@
 {
-  // Dev interpreter. Create it with:  uv venv && uv pip install -e ".[dev]"
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  // Default dev interpreter. Three managed venvs exist (.venv311 / .venv312 /
+  // .venv313), one per supported Python minor version, each an editable
+  // ".[dev]" install; 3.13 is the default. Switch with the interpreter picker
+  // (Ctrl+Shift+P → "Python: Select Interpreter"). Run the test suite on a
+  // specific version via the versioned "pytest" tasks / debug configs.
+  // Recreate them all with:  .\setup-venvs.ps1
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv313/Scripts/python.exe",
 
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["tests"],
