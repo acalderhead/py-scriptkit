@@ -20,7 +20,7 @@ runners or Azure Monitor / Log Analytics.
 
 Install the rich variant with:
 
-    pip install "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.0"
+    pip install "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.1"
 """
 
 from __future__ import annotations

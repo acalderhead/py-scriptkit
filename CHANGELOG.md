@@ -6,14 +6,21 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-07-24
+
+### Changed
+- `--help` now preserves the script docstring's layout (section headings and
+  line breaks) instead of reflowing it into a single paragraph, while still
+  showing each option's default. (New `_ScriptHelpFormatter`.)
+
+### Fixed
+- `get_logger` derives the logger name correctly on any OS when given a
+  Windows-style path (previously only split on the host OS's separator).
+
 ## [0.2.0] — 2026-07-24
 
-First **published** release. (v0.1.0 was tagged locally during setup but never
-pushed to GitHub; the first tag published to the remote is v0.2.0, so that is the
-baseline every script pins against.)
-
-Initial extraction of the common script infrastructure into an installable
-package.
+First published release: the common single-file-script infrastructure as an
+installable, versioned package.
 
 ### Added
 - `ScriptSettings` — frozen-dataclass config base with a `dir_base` → `data/` /

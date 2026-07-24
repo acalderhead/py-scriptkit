@@ -77,6 +77,19 @@ class ScriptSettings:
         self.dir_output.mkdir(parents=True, exist_ok=True)
 
 
+class _ScriptHelpFormatter(
+    argparse.ArgumentDefaultsHelpFormatter,
+    argparse.RawDescriptionHelpFormatter,
+):
+    """
+    Combined help formatter used for every script's --help.
+
+    RawDescriptionHelpFormatter keeps the module docstring's line breaks and
+    section layout intact (argparse's default reflows it into one paragraph);
+    ArgumentDefaultsHelpFormatter still appends "(default: ...)" to each option.
+    """
+
+
 def build_parser_from_settings(
     cls: type,
     description: str | None = None,
@@ -96,7 +109,7 @@ def build_parser_from_settings(
     """
     parser = argparse.ArgumentParser(
         description=description,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=_ScriptHelpFormatter,
     )
     if version is not None:
         parser.add_argument(
