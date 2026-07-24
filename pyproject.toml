@@ -15,7 +15,7 @@ dependencies = []
 [project.optional-dependencies]
 # Decorated console logging. Without this extra, scriptkit uses its stdlib
 # fallback (still exposes the semantic vocabulary via [TAG] prefixes).
-rich = ["rich_logger @ git+https://github.com/acalderhead/rich-logger.git@v1.0.1"]
+rich = ["rich_logger @ git+https://github.com/acalderhead/rich-logger.git@v1.0.4"]
 # Azure helpers in scriptkit.azure.
 azure = ["azure-identity>=1.16"]
 # Local development / CI.

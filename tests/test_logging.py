@@ -15,7 +15,7 @@ def test_fallback_exposes_semantic_methods(monkeypatch):
     _force_stdlib(monkeypatch)
     log = get_logger("test-shim-methods")
     for name in ("stage", "step", "substep", "config", "metric",
-                 "result", "read", "write", "meta", "alert", "check"):
+                 "result", "read", "write", "metadata", "alert", "check"):
         assert hasattr(log, name), f"missing semantic method: {name}"
 
 

@@ -11,16 +11,16 @@ runners or Azure Monitor / Log Analytics.
 
     | Purpose                        | Methods                            |
     | ------------------------------ | ---------------------------------- |
+    | I/O and metadata management    | `read`, `write`, `metadata`        |
     | Execution flow and structure   | `stage`, `step`, `substep`, `info` |
     | Experiment config and results  | `config`, `metric`, `result`       |
     | Warnings and alerts            | `warning`, `alert`                 |
     | Errors and failures            | `error`                            |
     | Developer checks and traceback | `check`, `debug`                   |
-    | I/O and metadata management    | `read`, `write`, `meta`            |
 
 Install the rich variant with:
 
-    pip install "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.1"
+    pip install "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.4"
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-# method  : (level,          tag)
+# method  :     (level,        tag)
 _SEMANTIC_METHODS = {
     "stage": (logging.INFO, "STAGE"),
     "step": (logging.INFO, "STEP"),
@@ -39,7 +39,7 @@ _SEMANTIC_METHODS = {
     "result": (logging.INFO, "RESULT"),
     "read": (logging.INFO, "READ"),
     "write": (logging.INFO, "WRITE"),
-    "meta": (logging.INFO, "META"),
+    "metadata": (logging.INFO, "METADATA"),
     "alert": (logging.WARNING, "ALERT"),
     "check": (logging.DEBUG, "CHECK"),
 }

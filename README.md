@@ -66,7 +66,7 @@ PEP 723 header, and `uv run` fetches it on first run:
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.3",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.4",
 # ]
 # ///
 from dataclasses import dataclass
@@ -90,10 +90,10 @@ What a script inherits from the package:
 | `scriptkit.azure.get_credential` | lazy `DefaultAzureCredential` |
 
 The semantic logging vocabulary (`stage`, `step`, `substep`, `config`, `metric`,
-`result`, `read`, `write`, `meta`, `alert`, `check`, plus stdlib `info` /
+`result`, `read`, `write`, `metadata`, `alert`, `check`, plus stdlib `info` /
 `warning` / `error` / `debug`) works identically under RichLogger and the
 fallback. Add the `[rich]` extra to the pin
-(`scriptkit[rich] @ git+...@v0.2.3`) for decorated console output; without it,
+(`scriptkit[rich] @ git+...@v0.2.4`) for decorated console output; without it,
 the same calls print plain `[TAG]`-prefixed lines.
 
 ## Maintenance

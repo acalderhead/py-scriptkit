@@ -6,6 +6,18 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.2.4] — 2026-07-24
+
+### Changed
+- `[rich]` extra now pins `rich_logger` v1.0.4, whose semantic-log labels match
+  the method that triggers them (e.g. `substep` → SUBSTEP, `info` → INFO)
+  instead of the old aliases (SUB, STATUS).
+- Renamed semantic method `meta` → `metadata` (label METADATA) to match
+  rich_logger v1.0.4. The stdlib fallback shim is updated in lockstep, so both
+  backends expose the same vocabulary. **Breaking:** any caller using
+  `logger.meta(...)` must switch to `logger.metadata(...)` (no in-repo callers
+  used it).
+
 ## [0.2.3] — 2026-07-24
 
 Development-tooling and documentation release — the shipped `scriptkit` package
