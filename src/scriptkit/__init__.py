@@ -18,13 +18,13 @@ script written today keeps running against the scriptkit it was born with even
 after the library moves on.
 """
 
+from .logging import get_logger, set_log_level
 from .settings import (
     ENV_PREFIX,
     ScriptSettings,
     build_parser_from_settings,
     parse_settings,
 )
-from .logging import get_logger, set_log_level
 from .times import timestamp
 
 __version__ = "0.1.0"

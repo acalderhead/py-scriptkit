@@ -7,7 +7,7 @@ naming output files and run directories.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 # Granularity presets for timestamp(); each trims the compact UTC stamp to a
 # coarser unit. Ordered coarse -> fine for readability.
@@ -38,4 +38,4 @@ def timestamp(granularity: str = "minute") -> str:
         raise ValueError(
             f"Unknown granularity {granularity!r}; choose from: {valid}"
         ) from None
-    return datetime.now(timezone.utc).strftime(fmt)
+    return datetime.now(UTC).strftime(fmt)

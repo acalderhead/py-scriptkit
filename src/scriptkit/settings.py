@@ -13,12 +13,12 @@ Optional[...]) are skipped by the auto-parser and left to bespoke handling.
 
 from __future__ import annotations
 
-import os
-import logging
 import argparse
-from dataclasses import dataclass, field, fields, MISSING
+import logging
+import os
+from dataclasses import MISSING, dataclass, field, fields
 from pathlib import Path
-from typing import Any, Optional, get_type_hints, get_origin
+from typing import Any, get_origin, get_type_hints
 
 _log = logging.getLogger(__name__)
 
@@ -79,8 +79,8 @@ class ScriptSettings:
 
 def build_parser_from_settings(
     cls: type,
-    description: Optional[str] = None,
-    version: Optional[str] = None,
+    description: str | None = None,
+    version: str | None = None,
 ) -> argparse.ArgumentParser:
     """
     Construct an ArgumentParser dynamically from a ScriptSettings subclass.
@@ -161,8 +161,8 @@ def build_parser_from_settings(
 
 def parse_settings(
     cls: type,
-    description: Optional[str] = None,
-    version: Optional[str] = None,
+    description: str | None = None,
+    version: str | None = None,
 ):
     """
     Parse command-line arguments and return a populated settings instance.
