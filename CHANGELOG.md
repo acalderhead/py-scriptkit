@@ -6,7 +6,11 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
-## [0.1.0] — 2026-07-24
+## [0.2.0] — 2026-07-24
+
+First **published** release. (v0.1.0 was tagged locally during setup but never
+pushed to GitHub; the first tag published to the remote is v0.2.0, so that is the
+baseline every script pins against.)
 
 Initial extraction of the common script infrastructure into an installable
 package.

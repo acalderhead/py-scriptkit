@@ -20,7 +20,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Create virtual environment
-        run: uv venv
+        # setup-uv may already provision a .venv; --clear makes this idempotent.
+        run: uv venv --clear
 
       - name: Install project (dev extra)
         run: uv pip install -e ".[dev]"
