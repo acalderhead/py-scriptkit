@@ -5,7 +5,7 @@
 #   # Pin the scriptkit version this script was written against. Bump the tag
 #   # only when you WANT its improvements; old scripts keep running unchanged.
 #   # For decorated console logging, use: "scriptkit[rich] @ git+..."
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.1",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.3",
 # ]
 # ///
 

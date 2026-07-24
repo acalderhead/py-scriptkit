@@ -45,6 +45,13 @@
       "command": "${workspaceFolder}/.venv313/Scripts/python.exe",
       "args": ["-m", "ruff", "check", "."],
       "problemMatcher": []
+    },
+    {
+      "label": "ruff format",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv313/Scripts/python.exe",
+      "args": ["-m", "ruff", "format", "."],
+      "problemMatcher": []
     }
   ]
 }

@@ -66,7 +66,7 @@ PEP 723 header, and `uv run` fetches it on first run:
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.1",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.3",
 # ]
 # ///
 from dataclasses import dataclass
@@ -93,19 +93,50 @@ The semantic logging vocabulary (`stage`, `step`, `substep`, `config`, `metric`,
 `result`, `read`, `write`, `meta`, `alert`, `check`, plus stdlib `info` /
 `warning` / `error` / `debug`) works identically under RichLogger and the
 fallback. Add the `[rich]` extra to the pin
-(`scriptkit[rich] @ git+...@v0.2.1`) for decorated console output; without it,
+(`scriptkit[rich] @ git+...@v0.2.3`) for decorated console output; without it,
 the same calls print plain `[TAG]`-prefixed lines.
 
-### Developing the package
+## Maintenance
 
-From a dev venv (or its VS Code task):
+All commands below assume the dev venvs from `setup-venvs.ps1` exist (each is an
+editable `.[dev]` install, so ruff and pytest are present). Every one also has a
+VS Code task — run it from **Terminal → Run Task** instead of typing the path if
+you prefer.
+
+### Linting & formatting
+
+Ruff is configured in [`pyproject.toml`](pyproject.toml) under `[tool.ruff]`
+(line length, pinned rule set, `templates/` excluded). From the repo root:
 
 ```powershell
-.\.venv313\Scripts\python.exe -m ruff check .
-.\.venv313\Scripts\python.exe -m pytest -q      # or the "pytest (all versions)" task
+.\.venv313\Scripts\python.exe -m ruff check .          # report lint issues
+.\.venv313\Scripts\python.exe -m ruff check --fix .    # apply the safe auto-fixes
+.\.venv313\Scripts\python.exe -m ruff format .         # reformat in place
 ```
 
-## Maintenance
+Lint is Python-version-independent, so the default `.venv313` is enough. Tasks:
+**`ruff check`**, **`ruff format`**. Format-on-save is already enabled for Python
+files ([.vscode/settings.json](.vscode/settings.json)), so day to day you mostly
+just save.
+
+### Tests
+
+The suite lives in `tests/` (one file per module; `testpaths` set in
+`pyproject.toml`). Run it on the default version:
+
+```powershell
+.\.venv313\Scripts\python.exe -m pytest -q
+```
+
+Run it on all three supported versions — the local equivalent of the CI matrix,
+and every public API must pass on each:
+
+```powershell
+.\.venv311\Scripts\python.exe -m pytest -q; .\.venv312\Scripts\python.exe -m pytest -q; .\.venv313\Scripts\python.exe -m pytest -q
+```
+
+Tasks: **`pytest (3.13)`** (default test task), **`pytest (3.11/3.12)`**,
+**`pytest (all versions)`** — or the VS Code Testing beaker.
 
 ### Versioning
 
