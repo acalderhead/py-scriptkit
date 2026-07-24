@@ -149,7 +149,9 @@ def get_logger(name_or_path: Any = None):
     """
     name = _name_from(name_or_path)
     try:
-        from rich_logger import RichLogger  # github/acalderhead/rich-logger
+        # rich_logger is optional (github/acalderhead/rich-logger); only present
+        # when the [rich] extra is installed, hence the missing-import ignore.
+        from rich_logger import RichLogger  # pyright: ignore[reportMissingImports]
 
         return RichLogger(name)
     except ImportError:

@@ -19,7 +19,7 @@ rich = ["rich_logger @ git+https://github.com/acalderhead/rich-logger.git@v1.0.4
 # Azure helpers in scriptkit.azure.
 azure = ["azure-identity>=1.16"]
 # Local development / CI.
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1.390"]
 
 [project.urls]
 Homepage = "https://github.com/acalderhead/py-scriptkit"
@@ -49,3 +49,10 @@ extend-exclude = ["templates"]
 # Pin the rule set explicitly so lint results are deterministic across ruff
 # versions and machines (E/W pycodestyle, F pyflakes, I import-sort, UP pyupgrade).
 select = ["E", "F", "I", "W", "UP"]
+
+[tool.pyright]
+# Type-check the shipped package against the minimum supported interpreter. The
+# package ships a py.typed marker, so this gate protects the types consumers see.
+include = ["src"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"

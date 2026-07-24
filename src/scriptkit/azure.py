@@ -27,7 +27,7 @@ def get_credential(**kwargs: Any):
     Raises ImportError with an actionable message if azure-identity is missing.
     """
     try:
-        from azure.identity import DefaultAzureCredential
+        from azure.identity import DefaultAzureCredential  # pyright: ignore[reportMissingImports]
     except ImportError as exc:  # pragma: no cover - depends on optional extra
         raise ImportError(
             "azure-identity is not installed. Add it to your script's PEP 723 "

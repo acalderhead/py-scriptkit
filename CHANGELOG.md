@@ -6,6 +6,19 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-07-24
+
+### Added
+- Ship a PEP 561 `py.typed` marker so consumer scripts (and their type
+  checkers) pick up scriptkit's inline type information.
+- Static type checking with `pyright` (added to the `dev` extra and run in CI),
+  configured via `[tool.pyright]` against the 3.11 baseline.
+
+### Changed
+- CI matrix expanded to **{ubuntu, windows} × {3.11, 3.12, 3.13}** (6 jobs);
+  Windows and Python 3.13 are now exercised on every push. Minimum supported
+  Python stays 3.11.
+
 ## [0.2.4] — 2026-07-24
 
 ### Changed
