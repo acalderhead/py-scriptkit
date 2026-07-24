@@ -17,11 +17,13 @@ py-scriptkit/
 │   ├── settings.py         ScriptSettings, build_parser_from_settings, parse_settings
 │   ├── logging.py          get_logger / set_log_level (RichLogger or stdlib shim)
 │   ├── times.py            timestamp()
-│   └── azure.py            lazy DefaultAzureCredential helper
-├── templates/
-│   └── script_template.py  the canonical starting point for a new script
+│   ├── azure.py            lazy DefaultAzureCredential helper
+│   ├── cli.py              `scriptkit new` scaffolder (console entry point)
+│   ├── py.typed            PEP 561 marker — ships inline types to consumers
+│   └── templates/
+│       └── script_template.py   the canonical starting point for a new script
 ├── tests/                  pytest suite (one file per module)
-├── .github/workflows/      ruff + pytest on 3.11 / 3.12 (see ROADMAP for expansion)
+├── .github/workflows/      ruff + pyright + pytest on {ubuntu,windows} × {3.11,3.12,3.13}
 ├── .vscode/                run / debug / test config
 ├── setup-venvs.ps1         builds the per-version dev venvs
 ├── pyproject.toml          package metadata (version is dynamic — read from __init__)
@@ -57,6 +59,24 @@ VS Code uses `.venv313` by default for IntelliSense, linting, and debugging
 
 ## Execution
 
+### Scaffolding a new script
+
+`scriptkit new` writes a fresh, pinned copy of the bundled template — the
+cross-platform replacement for the old per-repo `new-script.ps1`. Run it from a
+dev `.venv` that has scriptkit installed, or straight from git with `uvx`:
+
+```powershell
+# from a dev venv (scaffolds into ./scripts, pinned to that venv's scriptkit):
+.\.venv313\Scripts\scriptkit.exe new my_tool
+
+# or with no local install, straight from a tag:
+uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.4.0" scriptkit new my_tool
+```
+
+`scriptkit new NAME [--tag vX.Y.Z] [--dir DIR] [--force]` — the name is
+normalized to a snake_case filename; `--tag` defaults to the running scriptkit's
+own version; `--dir` defaults to `scripts`.
+
 ### Using scriptkit in a script
 
 Consumers don't install scriptkit — they pin a released tag in the script's
@@ -66,7 +86,7 @@ PEP 723 header, and `uv run` fetches it on first run:
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.4",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.4.0",
 # ]
 # ///
 from dataclasses import dataclass
@@ -93,7 +113,7 @@ The semantic logging vocabulary (`stage`, `step`, `substep`, `config`, `metric`,
 `result`, `read`, `write`, `metadata`, `alert`, `check`, plus stdlib `info` /
 `warning` / `error` / `debug`) works identically under RichLogger and the
 fallback. Add the `[rich]` extra to the pin
-(`scriptkit[rich] @ git+...@v0.2.4`) for decorated console output; without it,
+(`scriptkit[rich] @ git+...@v0.4.0`) for decorated console output; without it,
 the same calls print plain `[TAG]`-prefixed lines.
 
 ## Maintenance
@@ -106,7 +126,8 @@ you prefer.
 ### Linting & formatting
 
 Ruff is configured in [`pyproject.toml`](pyproject.toml) under `[tool.ruff]`
-(line length, pinned rule set, `templates/` excluded). From the repo root:
+(line length, pinned rule set, `src/scriptkit/templates/` excluded). From the
+repo root:
 
 ```powershell
 .\.venv313\Scripts\python.exe -m ruff check .          # report lint issues
@@ -118,6 +139,17 @@ Lint is Python-version-independent, so the default `.venv313` is enough. Tasks:
 **`ruff check`**, **`ruff format`**. Format-on-save is already enabled for Python
 files ([.vscode/settings.json](.vscode/settings.json)), so day to day you mostly
 just save.
+
+### Type checking
+
+Pyright (in the `dev` extra) checks the shipped package against the 3.11
+baseline; the package ships a `py.typed` marker, so this gate protects the types
+consumers actually see. Configured under `[tool.pyright]` (checks `src`, skips
+the bundled template).
+
+```powershell
+.\.venv313\Scripts\python.exe -m pyright
+```
 
 ### Tests
 
@@ -162,6 +194,7 @@ Assume nothing about prior versioning knowledge; every step is spelled out.
 5. **Go green:**
    ```powershell
    .\.venv313\Scripts\python.exe -m ruff check .
+   .\.venv313\Scripts\python.exe -m pyright
    .\.venv313\Scripts\python.exe -m pytest -q
    ```
    (Or the `ruff check` / `pytest (all versions)` VS Code tasks.)
@@ -172,10 +205,10 @@ Assume nothing about prior versioning knowledge; every step is spelled out.
    git push origin main --tags
    ```
 7. **Move scripts onto the new version** by bumping the pins where the default
-   lives: `templates/script_template.py`, each repo's `new-script.ps1` default
-   `-Tag`, the READMEs, and any example scripts. **Existing scripts keep their
-   old pin on purpose** — bump a script's header only when you want the new
-   behavior.
+   lives: `src/scriptkit/templates/script_template.py`, each script repo's
+   `new-script.ps1` / `setup-venvs.ps1` default `-Tag`, and the READMEs.
+   **Existing scripts keep their old pin on purpose** — bump a script's header
+   only when you want the new behavior.
 8. **Confirm** CI is green and at least one `uv run <script>` resolves the new
    tag.
 

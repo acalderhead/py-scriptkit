@@ -6,6 +6,23 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-07-24
+
+### Added
+- `scriptkit new NAME [--tag] [--dir] [--force]` — a cross-platform console
+  entry point (`[project.scripts]`) that scaffolds a new pinned script from the
+  bundled template. Replaces the per-repo, Windows-only `new-script.ps1`.
+  Invoke from a dev `.venv` or via
+  `uvx --from "scriptkit @ git+...@v0.4.0" scriptkit new my_tool`.
+- The script template now ships inside the package
+  (`scriptkit/templates/script_template.py`) so the scaffolder works without a
+  local checkout of this repo.
+
+### Changed
+- The canonical template moved from `templates/` to
+  `src/scriptkit/templates/`; ruff and pyright exclude it (it is data, not
+  checked package surface).
+
 ## [0.3.0] — 2026-07-24
 
 ### Added
