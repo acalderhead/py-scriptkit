@@ -9,11 +9,14 @@ sessions — update it as phases complete.
 
 - **Current release:** `scriptkit v0.2.1` (committed + tagged locally; push pending).
 - **Consumers pin:** `scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@vX.Y.Z`.
-- **Toolchain:** Python 3.11+; uv; ruff; pytest. CI on GitHub Actions (Ubuntu).
+- **Toolchain:** Python 3.11+; uv; ruff; pytest.
+- **CI today:** GitHub Actions, **Ubuntu only, Python 3.11 + 3.12** (two jobs). This
+  is why only "CI / 3.11" and "CI / 3.12" show up. 3.13/3.14 and Windows are added
+  in Phase 2 — they are NOT tested yet.
 
 ## Guardrails (avoid scope drift)
 
-1. **One theme per release.** Each phase below maps to at most one version bump.
+1. **One theme per release.** Each phase maps to at most one version bump.
 2. **Green before tag:** `ruff check .` + `pytest -q` pass on all CI targets.
 3. **SemVer, and tags are immutable** — never move a published tag; only add new ones.
 4. **Library changes → version bump + CHANGELOG entry.** Docs/CI-only changes don't bump.
@@ -21,18 +24,18 @@ sessions — update it as phases complete.
 
 ---
 
-## Phase 0 — Confirm the baseline  ·  Owner: YOU  ·  no release
+## Phase 0 — Confirm the baseline · Owner: YOU · no release
 
-Covers action item **(1) Test VS Code compatibility**.
+Covers **(item 1) VS Code compatibility**.
 
-**Do first:** push `v0.2.1`.
+Push `v0.2.1` first:
 ```powershell
 cd C:\Users\a.calderhead_stegose\repos\py-scriptkit; git push origin main --tags
 cd ..\py-scripts;        git push origin main
 cd ..\py-cenvar-scripts; git push origin main
 ```
 
-**Then run the VS Code checklist** (in `py-scripts`):
+Then run the VS Code checklist in `py-scripts`:
 
 | Check | How | Pass |
 | --- | --- | --- |
@@ -43,132 +46,153 @@ cd ..\py-cenvar-scripts; git push origin main
 | Tests | Testing beaker → run | `test_example_hello` passes (2) |
 | Lint/format | edit + save a script | Ruff formats on save; Problems clean |
 
-Note: Run tasks use `uv run` (need `v0.2.1` pushed + repo public). Debug/Tests use
-the local `.venv` and work offline. **Report any failures before Phase 1.**
+Run tasks use `uv run` (need `v0.2.1` pushed + repo public); Debug/Tests use the
+local `.venv` (offline OK). **Report failures before Phase 1.**
 
 ---
 
-## Phase 1 — Standardize READMEs  ·  Owner: ME  ·  no release
+## Phase 1 — Standardize + expand READMEs · Owner: ME · no release
 
-Covers action item **(2)**. Rewrite all three READMEs to a shared four-section
-template. Recommended order (leads with what-it-is, then how):
+Covers **(item 2)**, **(item 4 → RichLogger install docs)**, and the run-methods note.
 
-1. **Description** — what the repo is, in 2–3 lines.
+Shared section template for all three repos:
+
+1. **Description** — what the repo is (2–3 lines).
 2. **One-Time Setup** — install uv; create/select the dev `.venv`.
-3. **File Architecture** — the directory tree with one-line annotations.
-4. **Maintenance Instructions** — repo-specific upkeep: for `py-scriptkit`, the
-   release playbook + rules; for the script repos, the daily loop + "shared logic
-   goes to scriptkit."
+3. **File Architecture** — directory tree with one-line annotations.
+4. **Running files** *(script repos)* — how to execute, **both ways**:
+   - **PowerShell:** `uv run scripts/<name>.py [args]`
+   - **VS Code:** Ctrl+Shift+B ("uv run: current file"); the "(with args)" task; F5 to debug.
+   - Note which uses the pinned scriptkit (`uv run`) vs the local `.venv` (debug/tests).
+5. **Maintenance Instructions** — a concrete **checklist** (see below). Assume the
+   reader is new to versioning: spell out every detail, including when to touch
+   `pyproject.toml`.
 
-Decision: keep this exact section set and order across all three for consistency
-(script repos will have short Description/Setup, richer Architecture/Maintenance).
+**RichLogger install note (in Setup/Running of the script repos):** to get decorated
+logs, change the script's pin to add the `[rich]` extra —
+`scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@vX.Y.Z` — then
+`uv run` pulls RichLogger automatically; without it, scripts use the stdlib fallback.
+*(Depends on `acalderhead/rich-logger` being public at its pinned tag — verified in Phase 4.)*
 
-Test (YOU): skim each README top-to-bottom; confirm the four sections read cleanly.
+**`py-scriptkit` Maintenance = release checklist:**
+1. Make the change under `src/scriptkit/` (+ tests).
+2. Bump `__version__` in `src/scriptkit/__init__.py`. **Do NOT edit the version in
+   `pyproject.toml`** — it reads `__version__` automatically (`dynamic = ["version"]`).
+3. Only edit `pyproject.toml` if you **add/change dependencies or extras**
+   (`[project.dependencies]` / `[project.optional-dependencies]`).
+4. Add a `CHANGELOG.md` entry under a new `## [vX.Y.Z]` heading.
+5. `ruff check .` and `pytest -q` green.
+6. `git commit -am "Release vX.Y.Z: ..."` → `git tag vX.Y.Z` → `git push origin main --tags`.
+7. To move scripts onto the new version, bump the pins (template, `new-script.ps1`
+   default `-Tag`, READMEs, example). Existing scripts keep their old pin on purpose.
+8. Confirm CI is green and one `uv run` works.
 
----
+**Script-repo Maintenance:** the daily loop (`new-script.ps1` → edit → run → commit);
+"shared logic goes into `scriptkit`, not copied here."
 
-## Phase 2 — Catch bugs before release (CI hardening)  ·  Owner: ME  ·  → v0.2.2
-
-Covers **(3a) Windows runner**, **(3b) type check**, and **(5) Python 3.13/3.14**.
-
-- **CI matrix:** add `windows-latest` alongside `ubuntu-latest`, and expand Python
-  to **3.11, 3.12, 3.13, 3.14**. *(Answer to item 5: yes — 3.13 and 3.14 are both
-  released/stable as of now; minimum supported stays 3.11.)*
-- **Type checking:** add `pyright` (fast, no config) to dev deps + a CI step; ship a
-  `py.typed` marker in `src/scriptkit/` so consumer scripts get type info.
-- Fix whatever the Windows job / type check surfaces (this is the point).
-
-Why v0.2.2: `py.typed` changes the distributed package, so it warrants a bump.
-If type checking surfaces many fixes, they still ship together as v0.2.2.
-
-Test (YOU): after I push, confirm all CI jobs (now Win+Ubuntu × 3.11–3.14) are green,
-then re-run the Phase 0 VS Code checklist.
-
-Payoff: the two bug classes already hit (Windows path/encoding) get caught in CI, not by you.
-
----
-
-## Phase 3 — Pre-release formatting  ·  Owner: ME  ·  BLOCKED on your input
-
-Covers **(4) custom formatting rules (non-PEP)**.
-
-Context/limits you should know:
-- `ruff check` (lint) is highly configurable — rule selection, isort, many checks.
-- `ruff format` (the formatter) is Black-style and only mildly configurable
-  (line length, quote style, indent, magic trailing comma, line endings). It
-  **cannot** express arbitrary custom layout (e.g. aligned assignments, bespoke
-  comment banners).
-
-**INPUT NEEDED (blocker):** share your custom formatting rules — the actual config
-file, or a written list. With them I can determine what maps to ruff (lint/format)
-vs what needs a different approach, then wire a **pre-release format+check step**
-(and optionally a pre-commit hook). Until I see the rules I can't scope this.
-
-Likely outcome: a shared `ruff.toml`/format config in `py-scriptkit`, referenced by
-all repos, plus a documented "format before release" step. Release only if it
-changes shipped library code; otherwise tooling-only (no bump).
+Test (YOU): skim each README; confirm the sections read cleanly and the release
+checklist is followable start-to-finish.
 
 ---
 
-## Phase 4 — Richer auto-CLI types  ·  Owner: ME  ·  → v0.3.0
+## Phase 2 — Catch bugs before release (CI hardening) · Owner: ME · → v0.2.2
 
-Covers **(3c)**. Extend `build_parser_from_settings` to handle field types it
-currently skips: `Optional[...]`, `list[...]` (nargs), and `Enum` (choices).
+Covers **(3a) Windows runner**, **(3b) type check**, **(item 5) Python 3.13/3.14**.
 
-Why v0.3.0: new backward-compatible capability (minor bump).
+- **Matrix:** add `windows-latest`; expand Python to **3.11, 3.12, 3.13, 3.14**
+  (all released/stable; minimum supported stays 3.11). Result: 8 CI jobs.
+- **Type checking:** add `pyright` to dev deps + a CI step; ship a `py.typed` marker
+  in `src/scriptkit/` so consumer scripts get type info.
+- Fix whatever the Windows/type-check jobs surface.
+
+Why v0.2.2: `py.typed` changes the shipped package → warrants a bump.
+
+Test (YOU): after push, confirm all 8 CI jobs green; re-run the Phase 0 checklist.
+
+---
+
+## Phase 3 — Richer auto-CLI types · Owner: ME · → v0.3.0
+
+Covers **(3c)**. Extend `build_parser_from_settings` to handle `Optional[...]`,
+`list[...]` (nargs), and `Enum` (choices) — currently skipped.
 
 Test (YOU): scaffold a script with a `list[str]` and an `Enum` field; confirm
-`--flag a b c` and choice validation work, and `--help` shows the choices.
+`--flag a b c`, choice validation, and `--help` choices all work.
 
 ---
 
-## Phase 5 — RichLogger integration  ·  Owner: ME  ·  NEEDS CLARIFICATION  ·  → v0.3.x
+## Phase 4 — RichLogger end-to-end · Owner: ME · NEEDS INPUT · → v0.3.x
 
-Covers **(6) Integrate RichLogger; update commands**.
+Covers the rest of **(item 6) integrate RichLogger; update commands**.
 
-Current state: `scriptkit.logging.get_logger` already uses `rich_logger.RichLogger`
-when the `[rich]` extra is installed, and falls back to a stdlib shim otherwise.
+Phase 1 documents *how to pull* rich. This phase makes sure it actually works:
+- Verify `acalderhead/rich-logger` is **public** and the `[rich]` extra's pinned
+  tag resolves via `uv`.
+- Install a script with `scriptkit[rich]` and confirm decorated output; confirm the
+  stdlib fallback matches RichLogger method-for-method.
 
-**QUESTIONS to resolve before this phase:**
-- What does "integrate" mean here — (a) make `[rich]` the default so scripts get
-  decorated logs out of the box, (b) bundle it as a non-optional dependency, or
-  (c) just verify/document it works end-to-end?
-- "Update commands": does this mean align the semantic method names
-  (`stage/step/metric/...`) with RichLogger's **current** API, or update the
-  install/usage commands in docs? Please point me at RichLogger's current version
-  tag + method list (or the repo) so the shim stays in sync.
+**INPUT NEEDED:** (a) confirm what "integrate" should mean — keep `[rich]` opt-in
+(current), or make it the default for scripts; (b) point me at RichLogger's current
+tag + method list so the fallback shim stays in sync ("update commands").
 
-Test (YOU, once scoped): install a script with `scriptkit[rich]` and confirm
-decorated output; confirm the stdlib fallback still matches method-for-method.
+Test (YOU): run a `[rich]`-pinned script; confirm colored/structured output.
 
 ---
 
-## Phase 6 — Cross-platform scaffolder  ·  Owner: ME  ·  → v0.4.0
+## Phase 5 — Cross-platform scaffolder · Owner: ME · → v0.4.0
 
-Covers **(7)**. Replace the per-repo `new-script.ps1` (Windows-only, duplicated)
-with a `scriptkit new <name>` **console entry point** shipped in the package, so
-scaffolding works on any OS and lives in one place.
+Covers **(item 7)**. Replace per-repo `new-script.ps1` (Windows-only, duplicated)
+with a `scriptkit new <name>` **console entry point** in the package.
 
-- Add `[project.scripts]` entry point; implement `scriptkit new NAME [--tag] [--dir]`.
-- Invoke via `uvx --from "scriptkit @ git+...@vX.Y.Z" scriptkit new my_tool`
-  (no local install needed), or from the dev `.venv`.
-- Keep `new-script.ps1` for one release as a thin shim, then remove.
+- Add `[project.scripts]`; implement `scriptkit new NAME [--tag] [--dir]`.
+- Invoke via `uvx --from "scriptkit @ git+...@vX.Y.Z" scriptkit new my_tool`, or from
+  the dev `.venv`. Keep `new-script.ps1` one release as a shim, then remove.
 
-Why v0.4.0: new user-facing surface (entry point) in the package.
+Test (YOU): `scriptkit new demo` in a script repo → lands in `scripts/demo.py`,
+pinned, clean, runs.
 
-Test (YOU): run `scriptkit new demo` in a script repo; confirm it lands in
-`scripts/demo.py`, pinned, clean (no mojibake), and runs.
+---
+
+## Phase 6 — Port existing utility scripts · Owner: YOU · (can start after Phase 0)
+
+Covers **(item 5, new)**. Bring your current Python utilities into the system.
+
+Triage each utility:
+- **Standalone tool** → scaffold a script into `py-scripts` or `py-cenvar-scripts`
+  (`new-script.ps1 <name>`), paste logic into `main()`, expose inputs as `Settings`
+  fields, add its own PEP 723 deps.
+- **Shared logic** (used by 2+ scripts, generic) → flag it for `scriptkit`; ME to
+  integrate as a versioned release (own phase/bump). Don't copy shared code across scripts.
+
+This runs on YOUR track in parallel; ping me when something should become a
+`scriptkit` feature.
+
+---
+
+## Phase 7 — Custom formatting rules · Owner: ME · BLOCKED · deferred to LAST
+
+Covers **(item 4)**. Moved to the end per your call (time-costly; the rules doc is
+on another device).
+
+Context/limits: `ruff check` (lint) is highly configurable; `ruff format` is
+Black-style with only minor knobs and **can't** express arbitrary custom layout
+(aligned assignments, custom banners). Scope depends entirely on your rules.
+
+**INPUT NEEDED (when you're ready):** the custom-formatting doc. Then I'll map each
+rule to ruff (lint/format) vs "not enforceable," wire a shared config + a
+"format before release" step (and optionally a pre-commit hook), and document it.
 
 ---
 
 ## Recommended order
 
-Phase 0 (you) → 1 → 2 → 4 → 6, with **3** slotting in as soon as you provide the
-formatting rules, and **5** once its questions are answered. Phases 2, 4, 6 are the
-version-bearing releases (v0.2.2, v0.3.0, v0.4.0).
+**Phase 0 (you)** → **1** (READMEs) → **2** (v0.2.2 CI) → **3** (v0.3.0 CLI) →
+**4** (RichLogger, once its Qs are answered) → **5** (v0.4.0 scaffolder) →
+**7** (formatting, last). **Phase 6 (your script porting)** runs in parallel any
+time after Phase 0.
 
 ## Open questions (blockers)
 
-- **Phase 3:** your custom formatting rules (file or list).
-- **Phase 5:** meaning of "integrate RichLogger" + which "commands"; RichLogger's
-  current tag and method list.
+- **Phase 4:** keep `[rich]` opt-in or make it default? RichLogger's current tag +
+  method list. Is `acalderhead/rich-logger` public?
+- **Phase 7:** your custom-formatting doc (from the other device).
