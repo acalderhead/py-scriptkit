@@ -89,15 +89,26 @@ PEP 723 header, and `uv run` fetches it on first run:
 #   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.4.0",
 # ]
 # ///
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Literal
+
 from scriptkit import ScriptSettings, get_logger, parse_settings
 
 logger = get_logger(__file__)
 
 @dataclass(frozen=True)
 class Settings(ScriptSettings):
-    name: str = "World"      # -> --name / APP_NAME, default "World"
+    name: str = "World"           # -> --name / APP_NAME, default "World"
+    retries: int = 3              # scalars, bool, Path, Decimal, UUID, ...
+    mode: Literal["fast", "slow"] = "fast"   # Enum / Literal -> choices
+    tags: list[str] = field(default_factory=list)  # --tags a b c / APP_TAGS=a,b,c
+    since: datetime | None = None            # Optional[...] + ISO date/datetime
 ```
+
+Each settable field becomes a `--flag` and reads an `APP_*` env var; the type
+drives parsing (choices for `Enum`/`Literal`, `nargs` for `list[X]`,
+`fromisoformat` for `datetime`/`date`, unwrapping for `Optional[...]`).
 
 What a script inherits from the package:
 

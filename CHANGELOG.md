@@ -6,6 +6,17 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+### Added
+- The auto-CLI parser (`build_parser_from_settings` / `parse_settings`) now
+  wires richer field types beyond scalars and `bool`: `Enum` and `Literal[...]`
+  (constrained choices), `datetime` / `date` (ISO 8601 via `fromisoformat`),
+  `list[X]` (repeatable on the CLI, comma-separated in the env var), and
+  `Optional[...]` wrapping any supported type (unwrapped then re-dispatched, so
+  `Optional[list[X]]` / `Optional[Enum]` compose). Enum members are matched by
+  **name** (`--color RED`) on both the CLI and env paths. Types that can't map
+  to a single CLI argument (dict, tuple, non-Optional unions) are still skipped
+  and left to bespoke handling.
+
 ## [0.4.0] — 2026-07-24
 
 ### Added

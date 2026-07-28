@@ -5,16 +5,6 @@ retained from the original plan and are intentionally non-sequential.
 
 ---
 
-## PHASE 2: Richer auto-CLI types
-
-- Release: Minor
-- Scope:
-  - Extend `build_parser_from_settings` to handle `Optional[...]`, `list[...]`
-    (nargs), and `Enum` (choices)
-  - Determine if other types should be included
-
----
-
 ## PHASE 5: Custom formatting rules
 
 - Release: Minor
@@ -36,5 +26,5 @@ retained from the original plan and are intentionally non-sequential.
 
 ---
 
-ONCE 2, 5, 6 COMPLETE, we can start adding scripts in a major release for
+ONCE 5, 6 COMPLETE, we can start adding scripts in a major release for
 v1.0.0+
