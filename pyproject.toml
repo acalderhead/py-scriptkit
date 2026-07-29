@@ -56,14 +56,31 @@ extend-exclude = ["src/scriptkit/templates"]
 # Pin the rule set explicitly so lint results are deterministic across ruff
 # versions and machines (E/W pycodestyle, F pyflakes, I import-sort, UP pyupgrade).
 select = ["E", "F", "I", "W", "UP"]
+# Personal style keeps spaces around '=' for non-annotated keyword/default args
+# (e.g. dataclass(frozen = True)) — YAPF's spaces_around_default_or_named_assigns.
+# That deviates from PEP 8 E251, so silence it here or the two tools disagree.
+# E252 (spaces around *annotated* '=') is kept; it agrees with the style.
+ignore = ["E251"]
 
-# YAPF is the auto-formatter (the tunable layout engine). This is a barebones
-# starting point — the pep8 base plus a column limit aligned with Ruff's
-# line-length so the formatter and linter never disagree about wrapping.
-# Phase 5 will grow this section with the project's personal style rules.
+# YAPF is the auto-formatter (the tunable layout engine). Rules below are
+# derived from the project's formatting spec (Phase 5, still in progress) and
+# kept deliberately minimal — enough to fix layout a formatter should catch,
+# not an exhaustive style. NOTE: YAPF has no vertical-alignment feature, so any
+# manual column alignment (aligned imports, annotation colons, `=` blocks) is
+# normalized to single spaces.
 [tool.yapf]
 based_on_style = "pep8"
 column_limit = 100
+indent_width = 4
+use_tabs = false
+# Spaces around '=' for BOTH annotated defaults (def f(x: int = 5)) and
+# non-annotated named/keyword args (dataclass(frozen = True),
+# add_argument(type = arg_type)). Deviates from E251 — see the Ruff ignore.
+spaces_around_default_or_named_assign = true
+# Multi-line call/def brackets: closing ')' on its own dedented line.
+dedent_closing_brackets = true
+# 2 blank lines around top-level defs (PEP 8); 1 between methods is YAPF default.
+blank_lines_around_top_level_definition = 2
 
 [tool.yapfignore]
 # Mirror the Ruff/pyright exclude: the bundled template is a placeholder scaffold.
