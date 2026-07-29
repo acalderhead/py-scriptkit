@@ -19,7 +19,7 @@ rich = ["rich_logger @ git+https://github.com/acalderhead/rich-logger.git@v1.0.4
 # Azure helpers in scriptkit.azure.
 azure = ["azure-identity>=1.16"]
 # Local development / CI.
-dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1.390"]
+dev = ["pytest>=8", "ruff>=0.6", "yapf>=0.40", "pyright>=1.1.390"]
 
 [project.scripts]
 # Cross-platform scaffolder: `scriptkit new NAME [--tag] [--dir]`.
@@ -43,6 +43,9 @@ packages = ["src/scriptkit"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+# Ruff is used as a LINTER only (the hard-constraint gate) — not as the
+# formatter. YAPF (see [tool.yapf]) owns code layout; Ruff owns correctness,
+# import sorting, and modern-syntax checks. Do not run `ruff format` here.
 [tool.ruff]
 line-length = 100
 target-version = "py311"
@@ -53,6 +56,18 @@ extend-exclude = ["src/scriptkit/templates"]
 # Pin the rule set explicitly so lint results are deterministic across ruff
 # versions and machines (E/W pycodestyle, F pyflakes, I import-sort, UP pyupgrade).
 select = ["E", "F", "I", "W", "UP"]
+
+# YAPF is the auto-formatter (the tunable layout engine). This is a barebones
+# starting point — the pep8 base plus a column limit aligned with Ruff's
+# line-length so the formatter and linter never disagree about wrapping.
+# Phase 5 will grow this section with the project's personal style rules.
+[tool.yapf]
+based_on_style = "pep8"
+column_limit = 100
+
+[tool.yapfignore]
+# Mirror the Ruff/pyright exclude: the bundled template is a placeholder scaffold.
+ignore_patterns = ["src/scriptkit/templates/*"]
 
 [tool.pyright]
 # Type-check the shipped package against the minimum supported interpreter. The
