@@ -6,6 +6,20 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.5.3] — 2026-08-12
+
+### Fixed
+- `parse_settings` now forces UTF-8 stdout/stderr, so `--help` (which echoes the
+  script docstring's box-drawing underlines) no longer crashes with
+  `UnicodeEncodeError` on a legacy Windows codepage (cp1252). Guarded so pytest's
+  captured streams are left untouched.
+
+### Changed
+- The script template exposes `dir_base` as a field on `Settings`, defaulting
+  **outside the repo** (`~/script-output/<script-name>`) so runs never write into
+  version control, with a one-line example to repoint it (e.g. next to the
+  script). `dir_data` / `dir_output` still cascade from it.
+
 ## [0.5.2] — 2026-08-12
 
 ### Added

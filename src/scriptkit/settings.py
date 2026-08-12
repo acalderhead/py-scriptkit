@@ -43,6 +43,7 @@ import argparse
 import enum
 import logging
 import os
+import sys
 from collections.abc import Callable
 from dataclasses import MISSING, dataclass, field, fields
 from datetime import date, datetime
@@ -234,6 +235,9 @@ def parse_settings(
     Returns an instance of ``cls`` populated from CLI arguments, environment
     variables, or field defaults (in that order of precedence).
     """
+    # --help echoes the docstring's box-drawing underlines; force UTF-8 so that
+    # does not crash on a legacy Windows codepage (see _ensure_utf8_stdio).
+    _ensure_utf8_stdio()
     parser = build_parser_from_settings(cls, description = description, version = version)
     args = parser.parse_args()
     return cls(**vars(args))
@@ -242,6 +246,25 @@ def parse_settings(
 # ──────────────────────────────────────────────────────────────────────────────
 # Internal Helpers
 # ──────────────────────────────────────────────────────────────────────────────
+
+def _ensure_utf8_stdio() -> None:
+    """
+    Reconfigure stdout/stderr to UTF-8 where the stream supports it.
+
+    Scripts print box-drawing characters (the docstring underlines argparse
+    echoes in --help, plus any Unicode in logs). On a legacy Windows codepage
+    (cp1252) those raise UnicodeEncodeError; forcing UTF-8 avoids it. Streams
+    without ``.reconfigure`` (e.g. pytest's capture) are left untouched.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding = "utf-8")
+        except (ValueError, OSError):
+            pass
+
 
 def _bool_from_str(value: str) -> bool:
     """Parse a boolean from a string using common truthy spellings."""

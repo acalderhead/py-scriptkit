@@ -5,7 +5,7 @@
 #   # Pin the scriptkit version this script was written against. Bump the tag
 #   # only when you WANT its improvements; old scripts keep running unchanged.
 #   # For decorated console logging, use: "scriptkit[rich] @ git+..."
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.2",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.3",
 # ]
 # ///
 
@@ -43,7 +43,8 @@ Notes
 
 import sys
 import traceback
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from pathlib import Path
 
 from scriptkit import ScriptSettings, get_logger, parse_settings, set_log_level, timestamp
 
@@ -63,7 +64,15 @@ logger = get_logger(__file__)
 
 @dataclass(frozen = True)
 class Settings(ScriptSettings):
-    # Inherits dir_base / dir_data / dir_output cascade and log_level.
+    # Directory root. dir_data (<base>/data) and dir_output (<base>/output)
+    # cascade from it and are created on run. Defaults OUTSIDE the repo — under
+    # your home directory, keyed by the script's name — so runs never write into
+    # version control. Repoint it anywhere, e.g. next to the script:
+    #     dir_base: Path = field(default_factory = lambda: Path(__file__).resolve().parent)
+    dir_base: Path = field(
+        default_factory = lambda: Path.home() / "script-output" / Path(__file__).stem
+    )
+
     # Add only THIS script's fields below (each needs a default).
     temp_val: int = 42
     temp_bool: bool = False
