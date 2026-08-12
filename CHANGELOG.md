@@ -6,6 +6,20 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.5.1] — 2026-08-12
+
+### Added
+- `new-module.ps1` and `new-test.ps1` — Windows scaffolders that copy the
+  bundled `module_template.py` / `test_template.py` (local-dev companions to the
+  cross-platform `scriptkit new`).
+
+### Restored
+- `templates/script_template.py` — brought back (it was removed in 0.5.0). It is
+  the copy `scriptkit new`-style scaffolders and the downstream repos'
+  `new-script.ps1` point at; py-scriptkit remains the single source of truth for
+  all three templates. The template imports scriptkit (no inlined machinery) and
+  pins `@v0.5.1`.
+
 ## [0.5.0] — 2026-08-12
 
 ### Added
