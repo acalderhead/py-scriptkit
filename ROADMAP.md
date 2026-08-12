@@ -16,5 +16,17 @@ retained from the original plan and are intentionally non-sequential.
 
 ---
 
-ONCE 6 COMPLETE, we can start adding scripts in a major release for
+## PHASE 7: Editor run-button -> uv run
+
+- Release: Minor
+- Scope:
+  - Wire the editor's run/execute button (the terminal ▶) to `uv run` so a
+    script runs with its PEP 723 pins (installing scriptkit) instead of the
+    plain interpreter, which fails with ModuleNotFoundError.
+  - Likely a per-repo `.vscode` task / launch config (and/or a terminal
+    profile) that routes the run button through `uv run`.
+
+---
+
+ONCE 6, 7 COMPLETE, we can start adding scripts in a major release for
 v1.0.0+
