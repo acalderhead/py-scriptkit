@@ -1,25 +1,43 @@
 """
-scriptkit.times — small time helpers.
+Purpose
+───────
+    Small time helpers. ``timestamp`` returns a compact UTC stamp at a chosen
+    granularity, handy for naming output files and run directories.
 
-``timestamp`` returns a compact UTC stamp at a chosen granularity, handy for
-naming output files and run directories.
+Public API
+──────────
+    timestamp : Compact UTC timestamp string at a chosen granularity
+
+Usage
+─────
+    from scriptkit.times import timestamp
 """
 
 from __future__ import annotations
 
 from datetime import UTC, datetime
 
-# Granularity presets for timestamp(); each trims the compact UTC stamp to a
-# coarser unit. Ordered coarse -> fine for readability.
+__all__ = ["timestamp"]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Constants
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Granularity presets for timestamp()
 _TIMESTAMP_FORMATS = {
-    "year": "%Y",
-    "month": "%Y%m",
-    "day": "%Y%m%d",
-    "hour": "%Y%m%d%H",
+    "year":   "%Y",
+    "month":  "%Y%m",
+    "day":    "%Y%m%d",
+    "hour":   "%Y%m%d%H",
     "minute": "%Y%m%d%H%M",
     "second": "%Y%m%d%H%M%S",
 }
 
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Public API
+# ──────────────────────────────────────────────────────────────────────────────
 
 def timestamp(granularity: str = "minute") -> str:
     """

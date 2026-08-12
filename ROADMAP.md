@@ -9,8 +9,9 @@ retained from the original plan and are intentionally non-sequential.
 
 - Release: Minor
 - Scope:
-  - For py-scriptkit, update the template based on my style
-  - For others, add new styled/appropriate templates
+  - py-scriptkit templates are complete (module + test templates).
+  - Only py-scripts and py-scripts-cenvar still need their templates updated to
+    match the new style.
   - DO NOT update example files since these will soon be replaced
 
 ---

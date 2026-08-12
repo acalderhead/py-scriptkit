@@ -1,10 +1,20 @@
-"""Tests for scriptkit.cli: the `scriptkit new` scaffolder."""
+"""
+Purpose
+───────
+    Tests for scriptkit.cli: name slugifying, module scaffolding from the
+    bundled template, overwrite behavior, and --version.
+"""
+
+from __future__ import annotations
 
 import pytest
 
 from scriptkit import __version__
 from scriptkit.cli import _slugify, main
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Slugify
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_slugify_normalizes_to_snake_case():
     assert _slugify("Reconcile Invoices") == "reconcile_invoices"
@@ -17,25 +27,19 @@ def test_slugify_rejects_empty():
         _slugify("!!!")
 
 
-def test_new_creates_pinned_script(tmp_path):
-    rc = main(["new", "my_tool", "--dir", str(tmp_path), "--tag", "v9.9.9"])
+# ──────────────────────────────────────────────────────────────────────────────
+# scriptkit new
+# ──────────────────────────────────────────────────────────────────────────────
+
+def test_new_creates_module(tmp_path):
+    rc = main(["new", "my_module", "--dir", str(tmp_path)])
     assert rc == 0
-    created = tmp_path / "my_tool.py"
+    created = tmp_path / "my_module.py"
     assert created.exists()
-    text = created.read_text(encoding="utf-8")
-    # The pin was repointed to the requested tag...
-    assert "py-scriptkit.git@v9.9.9" in text
-    # ...and no stale pin from the template survives.
-    assert "@v0." not in text
-    # It's a real, runnable skeleton (template body carried over).
-    assert "class Settings(ScriptSettings)" in text
-
-
-def test_new_default_tag_is_this_version(tmp_path):
-    rc = main(["new", "demo", "--dir", str(tmp_path)])
-    assert rc == 0
-    text = (tmp_path / "demo.py").read_text(encoding="utf-8")
-    assert f"py-scriptkit.git@v{__version__}" in text
+    text = created.read_text(encoding = "utf-8")
+    # The bundled module template body carried over.
+    assert "__all__" in text
+    assert "def placeholder_func" in text
 
 
 def test_new_writes_lf_line_endings(tmp_path):
@@ -58,11 +62,15 @@ def test_new_force_overwrites(tmp_path):
 
 
 def test_new_creates_target_dir(tmp_path):
-    target = tmp_path / "nested" / "scripts"
+    target = tmp_path / "nested" / "pkg"
     rc = main(["new", "deep", "--dir", str(target)])
     assert rc == 0
     assert (target / "deep.py").exists()
 
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Version
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_version_flag_reports_version(capsys):
     with pytest.raises(SystemExit):

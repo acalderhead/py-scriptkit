@@ -1,21 +1,24 @@
 """
-scriptkit — a stdlib-first toolkit for single-file Python scripts.
+Purpose
+───────
+    A stdlib-first toolkit for single-file Python scripts. Provides the common
+    infrastructure that used to be inlined at the top of every script.
 
-Provides the common infrastructure that used to be inlined at the top of every
-script:
+Public API
+──────────
+    ScriptSettings             : frozen-dataclass config base with a path cascade
+    build_parser_from_settings : build an ArgumentParser from a settings class
+    parse_settings             : parse args into a populated settings instance
+                                 (precedence: CLI > env var > default)
+    get_logger / set_log_level : RichLogger when available, stdlib shim otherwise
+    timestamp                  : compact UTC timestamps at a chosen granularity
+    ENV_PREFIX                 : env-var prefix used by the settings wiring
 
-    - ScriptSettings          : frozen-dataclass config base with a path cascade
-    - build_parser_from_settings / parse_settings
-                              : auto-generate a CLI + env wiring from a dataclass
-                                (precedence: CLI > env var > default)
-    - get_logger / set_log_level
-                              : RichLogger when available, a semantic-aware
-                                stdlib fallback when it is not
-    - timestamp               : compact UTC timestamps at a chosen granularity
-
-Scripts pin a specific version of this package in their PEP 723 header, so a
-script written today keeps running against the scriptkit it was born with even
-after the library moves on.
+Notes
+─────
+    Scripts pin a specific version of this package in their PEP 723 header, so a
+    script written today keeps running against the scriptkit it was born with
+    even after the library moves on.
 """
 
 from .logging import get_logger, set_log_level
@@ -27,7 +30,7 @@ from .settings import (
 )
 from .times import timestamp
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = [
     "ENV_PREFIX",

@@ -6,6 +6,8 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-08-12
+
 ### Added
 - The auto-CLI parser (`build_parser_from_settings` / `parse_settings`) now
   wires richer field types beyond scalars and `bool`: `Enum` and `Literal[...]`
@@ -16,6 +18,23 @@ All notable changes to `scriptkit` are documented here. Versions follow
   **name** (`--color RED`) on both the CLI and env paths. Types that can't map
   to a single CLI argument (dict, tuple, non-Optional unions) are still skipped
   and left to bespoke handling.
+- Two new bundled templates: `templates/module_template.py` (importable modules)
+  and `templates/test_template.py` (pytest files), each carrying the project's
+  section-header + docstring style.
+
+### Changed
+- **`scriptkit new` now scaffolds a module** from `module_template.py` instead
+  of a script. The PEP 723 pin-rewrite step and the `--tag` flag are gone
+  (modules carry no dependency pin); `--dir` now defaults to the current
+  directory.
+- Formatting is enforced by Ruff-as-linter only (no autoformatter); the whole
+  package and its tests were restyled to a consistent house style — sectioned
+  module docstrings, `# ───` section headers ordered Constants → Public API →
+  Internal Helpers, and spaces around keyword/default `=`.
+
+### Removed
+- `templates/script_template.py` — py-scriptkit is now a module-first library;
+  script templates live in the downstream script repos.
 
 ## [0.4.0] — 2026-07-24
 

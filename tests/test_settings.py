@@ -1,4 +1,11 @@
-"""Tests for scriptkit.settings: precedence, path cascade, and typed CLI args."""
+"""
+Purpose
+───────
+    Tests for scriptkit.settings: precedence, path cascade, and the typed CLI
+    arguments (scalars, Enum, Literal, list, datetime/date, and Optional).
+"""
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
@@ -11,6 +18,9 @@ import pytest
 
 from scriptkit import ScriptSettings, build_parser_from_settings
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Fixtures & Helpers
+# ──────────────────────────────────────────────────────────────────────────────
 
 class Color(Enum):
     RED = "r"
@@ -18,21 +28,21 @@ class Color(Enum):
     BLUE = "b"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen = True)
 class Demo(ScriptSettings):
     temp_val: int = 42
     temp_bool: bool = False
 
 
-@dataclass(frozen=True)
+@dataclass(frozen = True)
 class Typed(ScriptSettings):
     ratio: float = 1.5
     price: Decimal = Decimal("9.99")
     ident: UUID = UUID("00000000-0000-0000-0000-000000000001")
     color: Color = Color.RED
     mode: Literal["fast", "slow"] = "fast"
-    tags: list[str] = field(default_factory=list)
-    sizes: list[int] = field(default_factory=list)
+    tags: list[str] = field(default_factory = list)
+    sizes: list[int] = field(default_factory = list)
     cutoff: datetime = datetime(2020, 1, 1, 0, 0, 0)
     day: date = date(2020, 1, 1)
     # Both spellings are exercised on purpose: Optional[X] resolves to
@@ -42,8 +52,12 @@ class Typed(ScriptSettings):
     maybe_color: Color | None = None
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Precedence & path cascade
+# ──────────────────────────────────────────────────────────────────────────────
+
 def test_path_cascade_and_defaults(tmp_path):
-    s = Demo(dir_base=tmp_path)
+    s = Demo(dir_base = tmp_path)
     assert s.temp_val == 42
     assert s.temp_bool is False
     assert s.dir_data == tmp_path / "data"
@@ -53,7 +67,7 @@ def test_path_cascade_and_defaults(tmp_path):
 
 
 def test_default_is_dataclass_default(monkeypatch):
-    monkeypatch.delenv("APP_TEMP_VAL", raising=False)
+    monkeypatch.delenv("APP_TEMP_VAL", raising = False)
     parser = build_parser_from_settings(Demo)
     args = parser.parse_args([])
     assert args.temp_val == 42
@@ -74,7 +88,7 @@ def test_cli_overrides_env(monkeypatch):
 
 
 def test_bool_optional_action(monkeypatch):
-    monkeypatch.delenv("APP_TEMP_BOOL", raising=False)
+    monkeypatch.delenv("APP_TEMP_BOOL", raising = False)
     parser = build_parser_from_settings(Demo)
     assert parser.parse_args(["--temp-bool"]).temp_bool is True
     assert parser.parse_args(["--no-temp-bool"]).temp_bool is False
@@ -89,7 +103,7 @@ def test_env_bool_truthy(monkeypatch):
 def test_dir_base_default_factory_resolves(monkeypatch, tmp_path):
     # dir_base uses default_factory; the parser must resolve it, not mark it
     # required. With no env/CLI override it should fall back to cwd.
-    monkeypatch.delenv("APP_DIR_BASE", raising=False)
+    monkeypatch.delenv("APP_DIR_BASE", raising = False)
     monkeypatch.chdir(tmp_path)
     parser = build_parser_from_settings(Demo)
     args = parser.parse_args([])
@@ -97,14 +111,15 @@ def test_dir_base_default_factory_resolves(monkeypatch, tmp_path):
 
 
 def test_version_flag_exits(capsys):
-    parser = build_parser_from_settings(Demo, version="1.2.3")
+    parser = build_parser_from_settings(Demo, version = "1.2.3")
     with pytest.raises(SystemExit):
         parser.parse_args(["--version"])
     assert "1.2.3" in capsys.readouterr().out
 
 
-# ── Scalars that construct straight from a string (no special handling) ──
-
+# ──────────────────────────────────────────────────────────────────────────────
+# Scalars (construct straight from a string, no special handling)
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_float_scalar():
     parser = build_parser_from_settings(Typed)
@@ -120,8 +135,9 @@ def test_decimal_and_uuid_scalars():
     assert args.ident == UUID("12345678-1234-5678-1234-567812345678")
 
 
-# ── Enum (matched by name) ──
-
+# ──────────────────────────────────────────────────────────────────────────────
+# Enum (matched by name)
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_enum_by_name_cli():
     parser = build_parser_from_settings(Typed)
@@ -147,8 +163,9 @@ def test_enum_rejects_value_spelling(capsys):
     assert "choose from" in capsys.readouterr().err
 
 
-# ── Literal (choices) ──
-
+# ──────────────────────────────────────────────────────────────────────────────
+# Literal (choices)
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_literal_choice_accepted():
     parser = build_parser_from_settings(Typed)
@@ -162,8 +179,9 @@ def test_literal_rejects_unknown(capsys):
     assert "invalid choice" in capsys.readouterr().err
 
 
-# ── list[X] (nargs on CLI, comma-separated in env) ──
-
+# ──────────────────────────────────────────────────────────────────────────────
+# list[X] (nargs on CLI, comma-separated in env)
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_list_str_cli_nargs():
     parser = build_parser_from_settings(Typed)
@@ -187,8 +205,9 @@ def test_list_env_comma_separated(monkeypatch):
     assert parser.parse_args([]).sizes == [4, 5, 6]
 
 
-# ── datetime / date (ISO 8601 via fromisoformat) ──
-
+# ──────────────────────────────────────────────────────────────────────────────
+# datetime / date (ISO 8601 via fromisoformat)
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_datetime_isoformat():
     parser = build_parser_from_settings(Typed)
@@ -207,8 +226,9 @@ def test_datetime_env(monkeypatch):
     assert parser.parse_args([]).cutoff == datetime(2024, 12, 31, 23, 59, 59)
 
 
-# ── Optional[...] wrapping other supported types ──
-
+# ──────────────────────────────────────────────────────────────────────────────
+# Optional[...] wrapping other supported types
+# ──────────────────────────────────────────────────────────────────────────────
 
 def test_optional_defaults_to_none():
     parser = build_parser_from_settings(Typed)
