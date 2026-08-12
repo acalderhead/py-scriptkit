@@ -2,9 +2,13 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   # Pin the scriptkit version this script was written against. Bump the tag
-#   # only when you WANT its improvements; old scripts keep running unchanged.
-#   # For decorated console logging, use: "scriptkit[rich] @ git+..."
+#   # Pin the scriptkit version this script was written against; bump the tag
+#   # only when you WANT its improvements (old scripts keep running unchanged).
+#   #
+#   # Decorated RichLogger console output is opt-in: swap the line below for its
+#   # [rich] form. It needs git access to fetch rich_logger; the plain pin falls
+#   # back to a stdlib logger and runs anywhere (CI, Azure).
+#   #   "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.3",
 #   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.3",
 # ]
 # ///
