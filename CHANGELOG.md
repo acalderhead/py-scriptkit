@@ -6,6 +6,15 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+## [0.5.2] — 2026-08-12
+
+### Added
+- Double-click `.bat` launchers next to every `.ps1` (setup-venvs, new-module,
+  new-test here; new-script/new-test in the downstream repos). Double-clicking
+  the `.bat` in File Explorer runs the scaffolder — it prompts for a name,
+  bypasses the execution policy for that one process, and pauses on the result
+  — so no terminal or execution-policy setup is needed.
+
 ## [0.5.1] — 2026-08-12
 
 ### Added
