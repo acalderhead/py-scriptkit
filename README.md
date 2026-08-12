@@ -59,23 +59,24 @@ VS Code uses `.venv313` by default for IntelliSense, linting, and debugging
 
 ## Execution
 
-### Scaffolding a new script
+### Scaffolding
 
-`scriptkit new` writes a fresh, pinned copy of the bundled template — the
-cross-platform replacement for the old per-repo `new-script.ps1`. Run it from a
-dev `.venv` that has scriptkit installed, or straight from git with `uvx`:
+`scriptkit new` writes a fresh copy of the bundled **module** template into the
+current directory (modules carry no dependency pin — they import scriptkit).
+Run it from a dev `.venv` that has scriptkit, or straight from git with `uvx`:
 
 ```powershell
-# from a dev venv (scaffolds into ./scripts, pinned to that venv's scriptkit):
-.\.venv313\Scripts\scriptkit.exe new my_tool
-
-# or with no local install, straight from a tag:
-uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.4" scriptkit new my_tool
+.\.venv313\Scripts\scriptkit.exe new my_module
+# or with no local install:
+uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.4" scriptkit new my_module
 ```
 
-`scriptkit new NAME [--tag vX.Y.Z] [--dir DIR] [--force]` — the name is
-normalized to a snake_case filename; `--tag` defaults to the running scriptkit's
-own version; `--dir` defaults to `scripts`.
+`scriptkit new NAME [--dir DIR] [--force]` — the name is normalized to a
+snake_case filename; `--dir` defaults to the current directory.
+
+For local dev, this repo also ships `new-module.ps1` / `new-test.ps1` (and
+`.bat` double-click launchers). **Scripts** (single-file, pinned, `uv run`) are
+scaffolded in the downstream script repos with their `new-script.ps1`.
 
 ### Using scriptkit in a script
 
@@ -114,7 +115,7 @@ What a script inherits from the package:
 
 | API | Purpose |
 | --- | --- |
-| `ScriptSettings` | frozen-dataclass config base; `dir_base` → `data/` / `output/` path cascade |
+| `ScriptSettings` | frozen-dataclass config base; `dir_output` == `dir_base` (created on run), `dir_data` = `dir_base/data` |
 | `parse_settings(cls)` | build a CLI + env wiring from the dataclass (precedence: **CLI > env > default**) |
 | `get_logger` / `set_log_level` | RichLogger console output, or a stdlib fallback with the same semantic methods |
 | `timestamp(granularity)` | compact UTC stamps (year → second) |
