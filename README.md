@@ -70,7 +70,7 @@ dev `.venv` that has scriptkit installed, or straight from git with `uvx`:
 .\.venv313\Scripts\scriptkit.exe new my_tool
 
 # or with no local install, straight from a tag:
-uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.4.0" scriptkit new my_tool
+uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.4" scriptkit new my_tool
 ```
 
 `scriptkit new NAME [--tag vX.Y.Z] [--dir DIR] [--force]` — the name is
@@ -86,7 +86,7 @@ PEP 723 header, and `uv run` fetches it on first run:
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.4.0",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.4",
 # ]
 # ///
 from dataclasses import dataclass, field
@@ -124,7 +124,7 @@ The semantic logging vocabulary (`stage`, `step`, `substep`, `config`, `metric`,
 `result`, `read`, `write`, `metadata`, `alert`, `check`, plus stdlib `info` /
 `warning` / `error` / `debug`) works identically under RichLogger and the
 fallback. Add the `[rich]` extra to the pin
-(`scriptkit[rich] @ git+...@v0.4.0`) for decorated console output; without it,
+(`scriptkit[rich] @ git+...@v0.5.4`) for decorated console output; without it,
 the same calls print plain `[TAG]`-prefixed lines.
 
 ## Maintenance

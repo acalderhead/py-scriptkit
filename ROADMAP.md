@@ -16,17 +16,10 @@ retained from the original plan and are intentionally non-sequential.
 
 ---
 
-## PHASE 7: Editor run-button -> uv run
-
-- Release: Minor
-- Scope:
-  - Wire the editor's run/execute button (the terminal ▶) to `uv run` so a
-    script runs with its PEP 723 pins (installing scriptkit) instead of the
-    plain interpreter, which fails with ModuleNotFoundError.
-  - Likely a per-repo `.vscode` task / launch config (and/or a terminal
-    profile) that routes the run button through `uv run`.
-
----
-
-ONCE 6, 7 COMPLETE, we can start adding scripts in a major release for
+ONCE 6 COMPLETE, we can start adding scripts in a major release for
 v1.0.0+
+
+(Phase 7 — editor run-button synced to `uv run` — is complete: each script
+repo's `.vscode` runs the open file through `uv run --exact` via the default
+build task / F5, plus a status-bar button from the VSCode Task Buttons
+extension.)
