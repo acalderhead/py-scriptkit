@@ -4,7 +4,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
 [Semantic Versioning](https://semver.org). Each released version has a git tag
 (`vX.Y.Z`) that scripts pin against.
 
-## [Unreleased]
+## [0.5.4] — 2026-08-12
 
 ### Added
 - Per-field `--help` text: `field(metadata={"help": "..."})` on a settings field
