@@ -38,7 +38,8 @@ Outputs
 Usage
 ─────
     uv run script_name.py [options]
-    uv run script_name.py --help       # lists every flag + its env var
+    uv run script_name.py --help              # lists every flag + its env var
+    uv run --python 3.12 script_name.py       # run under a specific Python
 
 Notes
 ─────
@@ -68,17 +69,18 @@ logger = get_logger(__file__)
 
 @dataclass(frozen = True)
 class Settings(ScriptSettings):
-    # Directory root. dir_data (<base>/data) and dir_output (<base>/output)
-    # cascade from it and are created on run. Defaults OUTSIDE the repo — under
-    # your home directory, keyed by the script's name — so runs never write into
-    # version control. Repoint it anywhere, e.g. next to the script:
+    # Directory root. dir_output IS this folder (created on run); dir_data is its
+    # data/ subfolder. Defaults to ~/_repo-output/<script-name> — a scratch
+    # holding ground outside the repo, so runs never write into version control.
+    # Repoint it anywhere, e.g. next to the script:
     #     dir_base: Path = field(default_factory = lambda: Path(__file__).resolve().parent)
     dir_base: Path = field(
-        default_factory = lambda: Path.home() / "script-output" / Path(__file__).stem
+        default_factory = lambda: Path.home() / "_repo-output" / Path(__file__).stem
     )
 
-    # Add only THIS script's fields below (each needs a default).
-    temp_val: int = 42
+    # Add only THIS script's fields below (each needs a default). Optionally give
+    # a flag a --help description with field(metadata={"help": "..."}).
+    temp_val: int = field(default = 42, metadata = {"help": "Example integer flag."})
     temp_bool: bool = False
 
 

@@ -6,6 +6,18 @@ All notable changes to `scriptkit` are documented here. Versions follow
 
 ## [Unreleased]
 
+### Added
+- Per-field `--help` text: `field(metadata={"help": "..."})` on a settings field
+  is now rendered in `--help`, shown before the `(env: ...)` note.
+
+### Changed
+- A script's `dir_output` is now `dir_base` itself (created on run) instead of
+  `dir_base/output` — no nested `output/` folder. `dir_data` stays `dir_base/data`.
+- Script template: `dir_base` now defaults to `~/_repo-output/<script-name>` (a
+  scratch holding ground outside the repo, so runs never touch version control),
+  and the Usage section documents `uv run --python <ver> script.py` for running
+  under a specific Python.
+
 ## [0.5.3] — 2026-08-12
 
 ### Fixed

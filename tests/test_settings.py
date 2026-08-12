@@ -61,9 +61,19 @@ def test_path_cascade_and_defaults(tmp_path):
     assert s.temp_val == 42
     assert s.temp_bool is False
     assert s.dir_data == tmp_path / "data"
-    assert s.dir_output == tmp_path / "output"
-    # __post_init__ creates the output dir.
+    # dir_output is dir_base itself (no nested output/ folder), created on run.
+    assert s.dir_output == tmp_path
     assert s.dir_output.exists()
+
+
+def test_field_metadata_help_appears_in_parser():
+    @dataclass(frozen = True)
+    class WithHelp(ScriptSettings):
+        thing: int = field(default = 7, metadata = {"help": "the thing to tune"})
+
+    help_text = build_parser_from_settings(WithHelp).format_help()
+    assert "the thing to tune" in help_text
+    assert "(env: APP_THING)" in help_text
 
 
 def test_default_is_dataclass_default(monkeypatch):

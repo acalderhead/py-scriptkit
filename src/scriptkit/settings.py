@@ -79,9 +79,9 @@ class ScriptSettings:
     Base configuration for scripts built on scriptkit.
 
     Subclass this and add your own fields (each needs a default so it can act as
-    a CLI default). ``dir_base`` is the single settable root; ``dir_data`` and
-    ``dir_output`` cascade from it in ``__post_init__``, so overriding the root
-    relocates everything.
+    a CLI default). ``dir_base`` is the single settable root: ``dir_output`` is
+    ``dir_base`` itself (created on run) and ``dir_data`` is ``dir_base/data``,
+    so overriding the root relocates everything.
 
     ``dir_base`` defaults to the current working directory. For script-relative
     paths instead, override it in your subclass::
@@ -104,7 +104,7 @@ class ScriptSettings:
         """Derive dependent paths and ensure required infrastructure exists."""
         # object.__setattr__ is required because the dataclass is frozen.
         object.__setattr__(self, "dir_data",   self.dir_base / "data")
-        object.__setattr__(self, "dir_output", self.dir_base / "output")
+        object.__setattr__(self, "dir_output", self.dir_base)
         self.dir_output.mkdir(parents = True, exist_ok = True)
 
 
@@ -182,6 +182,10 @@ def build_parser_from_settings(
             default = None
             is_required = True
 
+        # Optional per-field help via field(metadata={"help": "..."}), shown
+        # before the "(env: ...)" note that every flag carries.
+        prefix = f"{f.metadata['help']}  " if f.metadata.get("help") else ""
+
         if spec.kind == "bool":
             # BooleanOptionalAction gives a clean --flag / --no-flag pair and
             # makes a required boolean expressible (unlike a bare store_true).
@@ -190,7 +194,7 @@ def build_parser_from_settings(
                 action   = argparse.BooleanOptionalAction,
                 default  = None if is_required else default,
                 required = is_required,
-                help     = f"(env: {env_name})",
+                help     = f"{prefix}(env: {env_name})",
             )
         elif spec.kind == "list":
             # nargs="*" collects space-separated CLI tokens; the env form is
@@ -201,14 +205,14 @@ def build_parser_from_settings(
                 type     = spec.caster,
                 default  = None if is_required else default,
                 required = is_required,
-                help     = f"(env: {env_name}, comma-separated)",
+                help     = f"{prefix}(env: {env_name}, comma-separated)",
             )
         else:
             kwargs: dict[str, Any] = {
                 "type": spec.caster,
                 "default": None if is_required else default,
                 "required": is_required,
-                "help": f"(env: {env_name})",
+                "help": f"{prefix}(env: {env_name})",
             }
             # choices (Literal) and metavar (Enum) are only set when relevant.
             if spec.choices is not None:
