@@ -10,12 +10,12 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["tests"],
 
-  // YAPF (eeyore.yapf extension) is the on-save formatter — it owns code
-  // layout. Ruff (charliermarsh.ruff) stays as the linter and still organizes
-  // imports on save (YAPF does not sort imports). Install both extensions.
+  // No autoformatter: code layout (including intentional column alignment) is
+  // maintained by hand, so format-on-save is OFF. Ruff (charliermarsh.ruff) is
+  // the linter and still organizes imports on save — which normalizes import
+  // spacing (aligned import columns are not preserved; everything else is).
   "[python]": {
-    "editor.defaultFormatter": "eeyore.yapf",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.codeActionsOnSave": { "source.organizeImports.ruff": "explicit" }
   },
 

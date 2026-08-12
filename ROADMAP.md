@@ -5,17 +5,6 @@ retained from the original plan and are intentionally non-sequential.
 
 ---
 
-## PHASE 5: Custom formatting rules
-
-- Release: Minor
-- Scope:
-  - Get Python formatting rules document
-  - Determine Ruff vs personal formatting
-  - Configure for Ruff
-  - [OPTIONAL] Create an auto-formatter in VS Code
-
----
-
 ## PHASE 6: Update templates
 
 - Release: Minor
@@ -26,5 +15,5 @@ retained from the original plan and are intentionally non-sequential.
 
 ---
 
-ONCE 5, 6 COMPLETE, we can start adding scripts in a major release for
+ONCE 6 COMPLETE, we can start adding scripts in a major release for
 v1.0.0+

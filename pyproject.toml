@@ -19,7 +19,7 @@ rich = ["rich_logger @ git+https://github.com/acalderhead/rich-logger.git@v1.0.4
 # Azure helpers in scriptkit.azure.
 azure = ["azure-identity>=1.16"]
 # Local development / CI.
-dev = ["pytest>=8", "ruff>=0.6", "yapf>=0.40", "pyright>=1.1.390"]
+dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1.390"]
 
 [project.scripts]
 # Cross-platform scaffolder: `scriptkit new NAME [--tag] [--dir]`.
@@ -43,9 +43,11 @@ packages = ["src/scriptkit"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-# Ruff is used as a LINTER only (the hard-constraint gate) — not as the
-# formatter. YAPF (see [tool.yapf]) owns code layout; Ruff owns correctness,
-# import sorting, and modern-syntax checks. Do not run `ruff format` here.
+# There is NO autoformatter. Ruff is the linter — the hard-constraint gate for
+# correctness, import sorting, and modern syntax — and code layout (including
+# intentional vertical column alignment) is maintained by hand. No autoformatter
+# (YAPF, Black, autopep8, `ruff format`) preserves column alignment, so none is
+# used; do not run `ruff format` here.
 [tool.ruff]
 line-length = 100
 target-version = "py311"
@@ -56,35 +58,15 @@ extend-exclude = ["src/scriptkit/templates"]
 # Pin the rule set explicitly so lint results are deterministic across ruff
 # versions and machines (E/W pycodestyle, F pyflakes, I import-sort, UP pyupgrade).
 select = ["E", "F", "I", "W", "UP"]
-# Personal style keeps spaces around '=' for non-annotated keyword/default args
-# (e.g. dataclass(frozen = True)) — YAPF's spaces_around_default_or_named_assigns.
-# That deviates from PEP 8 E251, so silence it here or the two tools disagree.
-# E252 (spaces around *annotated* '=') is kept; it agrees with the style.
-ignore = ["E251"]
-
-# YAPF is the auto-formatter (the tunable layout engine). Rules below are
-# derived from the project's formatting spec (Phase 5, still in progress) and
-# kept deliberately minimal — enough to fix layout a formatter should catch,
-# not an exhaustive style. NOTE: YAPF has no vertical-alignment feature, so any
-# manual column alignment (aligned imports, annotation colons, `=` blocks) is
-# normalized to single spaces.
-[tool.yapf]
-based_on_style = "pep8"
-column_limit = 100
-indent_width = 4
-use_tabs = false
-# Spaces around '=' for BOTH annotated defaults (def f(x: int = 5)) and
-# non-annotated named/keyword args (dataclass(frozen = True),
-# add_argument(type = arg_type)). Deviates from E251 — see the Ruff ignore.
-spaces_around_default_or_named_assign = true
-# Multi-line call/def brackets: closing ')' on its own dedented line.
-dedent_closing_brackets = true
-# 2 blank lines around top-level defs (PEP 8); 1 between methods is YAPF default.
-blank_lines_around_top_level_definition = 2
-
-[tool.yapfignore]
-# Mirror the Ruff/pyright exclude: the bundled template is a placeholder scaffold.
-ignore_patterns = ["src/scriptkit/templates/*"]
+# Relax the pycodestyle whitespace rules that forbid intentional column
+# alignment, so hand-aligned code stays lint-clean:
+#   E251 — spaces around '=' for non-annotated kwargs/defaults (frozen = True)
+#   E221/E222 — multiple spaces before/after an operator (aligned `=` blocks)
+#   E271/E272 — multiple spaces after/before a keyword (aligned `import` columns)
+# E252 (spaces around *annotated* '=') is kept — it agrees with the style.
+# NOTE: the `I` (isort) rule still normalizes import spacing, so aligned import
+# columns are the one thing not preserved; imports stay isort-canonical.
+ignore = ["E251", "E221", "E222", "E271", "E272"]
 
 [tool.pyright]
 # Type-check the shipped package against the minimum supported interpreter. The
