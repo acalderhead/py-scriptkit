@@ -37,7 +37,7 @@ Notes
 
     Install the rich variant with:
 
-        pip install "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.2.4"
+        pip install "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v1.0.0"
 """
 
 from __future__ import annotations

@@ -12,7 +12,7 @@ Public API
 
 Usage
 ─────
-    uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.0" \
+    uvx --from "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v1.0.0" \
         scriptkit new my_module
 
 Notes

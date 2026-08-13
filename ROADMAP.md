@@ -1,25 +1,13 @@
-# Roadmap / Action Plan
+# Roadmap
 
-Remaining action items before the major **v1.0.0** release. Phase numbers are
-retained from the original plan and are intentionally non-sequential.
+What was left before **v1.0.0**, in the order it needed doing. The phase numbers
+carry over from the original plan and are deliberately non-sequential; the phases
+not listed here shipped in earlier releases and are recorded in CHANGELOG.md.
+Anything that is not committed work lives in IDEAS.md, not here.
 
----
+## After 1.0.0
 
-## PHASE 6: Update templates
-
-- Release: Minor
-- Scope:
-  - py-scriptkit templates are complete (module + test templates).
-  - Only py-scripts and py-scripts-cenvar still need their templates updated to
-    match the new style.
-  - DO NOT update example files since these will soon be replaced
-
----
-
-ONCE 6 COMPLETE, we can start adding scripts in a major release for
-v1.0.0+
-
-(Phase 7 — editor run-button synced to `uv run` — is complete: each script
-repo's `.vscode` runs the open file through `uv run --exact` via the default
-build task / F5, plus a status-bar button from the VSCode Task Buttons
-extension.)
+Once the templates are settled, real scripts start landing in the script repos,
+and py-scriptkit's own line moves to v1.0.0 and beyond under the release process
+in its README. Where the library goes after that is a question for IDEAS.md; an
+entry graduates back here when it turns into an actual plan.

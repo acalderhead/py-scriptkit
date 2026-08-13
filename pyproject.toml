@@ -22,7 +22,7 @@ azure = ["azure-identity>=1.16"]
 dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1.390"]
 
 [project.scripts]
-# Cross-platform scaffolder: `scriptkit new NAME [--tag] [--dir]`.
+# Cross-platform scaffolder: `scriptkit new NAME [--dir] [--force]` (scaffolds a module).
 scriptkit = "scriptkit.cli:main"
 
 [project.urls]

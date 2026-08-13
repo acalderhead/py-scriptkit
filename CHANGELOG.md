@@ -2,9 +2,34 @@
 
 All notable changes to `scriptkit` are documented here. Versions follow
 [Semantic Versioning](https://semver.org). Each released version has a git tag
-(`vX.Y.Z`) that scripts pin against.
+(`vX.Y.Z`) that scripts pin against. Newest first.
 
-## [0.5.4] — 2026-08-12
+## [Unreleased]
+
+Nothing yet. Accumulate entries here, then move them under a dated `## [vX.Y.Z]`
+heading when the release is cut (see the release checklist in the README).
+
+## [1.0.0] - 2026-08-13
+
+First stable release. The public API is unchanged from 0.5.4; the module-first
+library that landed across the 0.5.x line (typed auto-CLI, semantic logging with
+a stdlib fallback, and the script/module/test templates as the single source of
+truth) is now committed as the 1.x surface a script can pin against for the long
+term.
+
+### Changed
+- Documentation across the repos rewritten for consistency and reordered around
+  how each file is actually read (README, CLAUDE, ROADMAP), with the exact
+  terminal each command block expects called out.
+- Every hand-written scriptkit pin moved to `v1.0.0` in lockstep: the script
+  template, the `cli.py` and `logging.py` docstrings, the script repos'
+  `new-script` / `new-test` / `setup-venvs` `-Tag` defaults, and the READMEs.
+
+### Added
+- `IDEAS.md`: a post-1.0 brainstorm of directions for the library, kept out of
+  the committed roadmap.
+
+## [0.5.4] - 2026-08-12
 
 ### Added
 - Per-field `--help` text: `field(metadata={"help": "..."})` on a settings field
@@ -18,7 +43,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   and the Usage section documents `uv run --python <ver> script.py` for running
   under a specific Python.
 
-## [0.5.3] — 2026-08-12
+## [0.5.3] - 2026-08-12
 
 ### Fixed
 - `parse_settings` now forces UTF-8 stdout/stderr, so `--help` (which echoes the
@@ -32,7 +57,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   version control, with a one-line example to repoint it (e.g. next to the
   script). `dir_data` / `dir_output` still cascade from it.
 
-## [0.5.2] — 2026-08-12
+## [0.5.2] - 2026-08-12
 
 ### Added
 - Double-click `.bat` launchers next to every `.ps1` (setup-venvs, new-module,
@@ -41,7 +66,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   bypasses the execution policy for that one process, and pauses on the result
   — so no terminal or execution-policy setup is needed.
 
-## [0.5.1] — 2026-08-12
+## [0.5.1] - 2026-08-12
 
 ### Added
 - `new-module.ps1` and `new-test.ps1` — Windows scaffolders that copy the
@@ -55,7 +80,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   all three templates. The template imports scriptkit (no inlined machinery) and
   pins `@v0.5.1`.
 
-## [0.5.0] — 2026-08-12
+## [0.5.0] - 2026-08-12
 
 ### Added
 - The auto-CLI parser (`build_parser_from_settings` / `parse_settings`) now
@@ -85,7 +110,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
 - `templates/script_template.py` — py-scriptkit is now a module-first library;
   script templates live in the downstream script repos.
 
-## [0.4.0] — 2026-07-24
+## [0.4.0] - 2026-07-24
 
 ### Added
 - `scriptkit new NAME [--tag] [--dir] [--force]` — a cross-platform console
@@ -102,7 +127,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   `src/scriptkit/templates/`; ruff and pyright exclude it (it is data, not
   checked package surface).
 
-## [0.3.0] — 2026-07-24
+## [0.3.0] - 2026-07-24
 
 ### Added
 - Ship a PEP 561 `py.typed` marker so consumer scripts (and their type
@@ -115,7 +140,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   Windows and Python 3.13 are now exercised on every push. Minimum supported
   Python stays 3.11.
 
-## [0.2.4] — 2026-07-24
+## [0.2.4] - 2026-07-24
 
 ### Changed
 - `[rich]` extra now pins `rich_logger` v1.0.4, whose semantic-log labels match
@@ -127,7 +152,7 @@ All notable changes to `scriptkit` are documented here. Versions follow
   `logger.meta(...)` must switch to `logger.metadata(...)` (no in-repo callers
   used it).
 
-## [0.2.3] — 2026-07-24
+## [0.2.3] - 2026-07-24
 
 Development-tooling and documentation release — the shipped `scriptkit` package
 is unchanged from 0.2.1 (identical public API and behavior).
@@ -147,7 +172,7 @@ is unchanged from 0.2.1 (identical public API and behavior).
 Note: `0.2.2` was tagged on a docs-only commit with no version bump or changelog
 entry; `0.2.3` supersedes it and is the first properly cut release since 0.2.1.
 
-## [0.2.1] — 2026-07-24
+## [0.2.1] - 2026-07-24
 
 ### Changed
 - `--help` now preserves the script docstring's layout (section headings and
@@ -158,7 +183,7 @@ entry; `0.2.3` supersedes it and is the first properly cut release since 0.2.1.
 - `get_logger` derives the logger name correctly on any OS when given a
   Windows-style path (previously only split on the host OS's separator).
 
-## [0.2.0] — 2026-07-24
+## [0.2.0] - 2026-07-24
 
 First published release: the common single-file-script infrastructure as an
 installable, versioned package.

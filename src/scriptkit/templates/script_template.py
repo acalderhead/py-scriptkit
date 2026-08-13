@@ -8,8 +8,8 @@
 #   # Decorated RichLogger console output is opt-in: swap the line below for its
 #   # [rich] form. It needs git access to fetch rich_logger; the plain pin falls
 #   # back to a stdlib logger and runs anywhere (CI, Azure).
-#   #   "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.3",
-#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v0.5.3",
+#   #   "scriptkit[rich] @ git+https://github.com/acalderhead/py-scriptkit.git@v1.0.0",
+#   "scriptkit @ git+https://github.com/acalderhead/py-scriptkit.git@v1.0.0",
 # ]
 # ///
 
